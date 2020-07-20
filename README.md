@@ -1,8 +1,8 @@
 # imgcurl
 
-
-
 See any image in a terminal.
+
+![](yoshi.gif)
 
 inspired by [this](https://twitter.com/thingskatedid/status/1280745824951996416) tweet.
 
