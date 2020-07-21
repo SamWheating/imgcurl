@@ -14,10 +14,6 @@ Run this in the terminal:
 
 You'll need to have `curl` installed. 
 
-If the image is wider than your terminal, limit the width:
-
-`curl -v 'imgcurl.samwheating.com?url=https://shortnur.pro/beeg&width=80'`
-
 ### Usage:
 
 `curl -v imgcurl.samwheating.com?url=<ANY_DIRECT_IMAGE_URL>`
@@ -28,4 +24,4 @@ ex: `curl -v imgcurl.samwheating.com?url=<ANY_DIRECT_IMAGE_URL>&width=100`
 
 works with most image formats (transparent PNG is ideal).
 
-These headers get blocked by most production servers (gunicorn etc) so I had to run a flask development server in production - there's probably a better way of doing this. Google Cloud Run also can't handle this, but I'm not sure why
+These headers get blocked by most production servers (gunicorn etc), and also broke Google Cloud Run. 
