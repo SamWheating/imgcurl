@@ -15,24 +15,17 @@ ASPECT_RATIO = 2.3  # characters in a terminal aren't square so we have to stret
 # 4 element: (r,g,b,opacity)
 # 3 element: (r,g,b)
 def pixelchar(color):
-    
-    if type(color) == int:
-        color = ImageColor.getrgb(color)
-        # color -= 16
-        # r = int(color/36)
-        # color -= r*36
-        # g = int(color/6)
-        # b = color - g*6
 
-    else:
-        if len(color) == 4:
-            if color[3] == 0:
-                return "\u001b[0m" + PIXEL
-        # normalize color from 24-bit 3*(0-255) to 8-bit 3*(0-5)
-        r,g,b = color[0:3]
-        r = math.floor(r/51)
-        g = math.floor(g/51)
-        b = math.floor(b/51)
+    # Handling transparency.
+    if len(color) == 4:
+        if color[3] == 0:
+            return "\u001b[0m" + PIXEL
+
+    # normalize color from 24-bit 3*(0-255) to 8-bit 3*(0-5)
+    r,g,b = color[0:3]
+    r = math.floor(r/51)
+    g = math.floor(g/51)
+    b = math.floor(b/51)
 
     # create the appropriate ansi control character.
     color = 16 + 36 * r + 6 * g + b
@@ -45,7 +38,7 @@ def image_to_characters(img):
         rstring = ""
         for column in range(img.size[0]):
             rstring += pixelchar(img.getpixel((column, row)))
-        rstring += "\u001b[0m"
+        rstring += "\u001b[0m"  # Reset code.
         rows.append(rstring)
 
     return rows
