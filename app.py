@@ -1,7 +1,7 @@
 import requests
 
 from PIL import Image, ImageColor
-from flask import Flask, make_response, redirect, request
+from flask import Flask, make_response, redirect, request, send_file
 from io import BytesIO
 
 import os
@@ -51,9 +51,15 @@ def get_new_size(size, width):
         return size
     return (width, int(size[1]/(size[0]/width)))
 
+@app.before_request
+def before_request():
+    if not request.is_secure and (app.env != "development"):
+        url = request.url.replace("http://", "https://", 1)
+        code = 301
+        return redirect(url, code=code)
 
 @app.route('/')
-def base_route():
+def base_route():        
     url = request.args.get('url', None)
     if url is None:
         img = Image.open('raccoon.png')
@@ -70,12 +76,19 @@ def base_route():
     img = img.resize((int(img.size[0]*ASPECT_RATIO), img.size[1]))
     img = img.resize(get_new_size(img.size, width))
 
-    resp = redirect("https://samwheating.com", 302)
+    resp = redirect("/about", 302)
     lines = image_to_characters(img)
     for i in range(len(lines)):
         resp.headers['{}'.format(i).ljust(3, '-')] = lines[i]
     return resp
 
+@app.route('/about')
+def hello():
+    return send_file('./about.html') 
+
 if __name__ == '__main__':
     port = os.getenv("PORT", 5000)
-    app.run(host='0.0.0.0', port=port)
+    if app.env != "development":
+        app.run(host='0.0.0.0', port=port, ssl_context=('/certs/cert.pem', '/certs/privkey.pem'))
+    else:
+        app.run(host='0.0.0.0', port=port, debug=True)
